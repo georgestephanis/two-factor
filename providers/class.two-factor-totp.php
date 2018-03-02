@@ -42,6 +42,31 @@ class Two_Factor_Totp extends Two_Factor_Provider {
 	}
 
 	/**
+	 * Timestamp returned by time()
+	 *
+	 * @var int $now
+	 */
+	private static $now;
+
+	/**
+	 * Override time() in the current object for testing.
+	 *
+	 * @return int
+	 */
+	private static function time() {
+		return self::$now ?: time();
+	}
+
+	/**
+	 * Set up the internal state of time() invocations for deterministic generation.
+	 *
+	 * @param int $now Timestamp to use when overriding time().
+	 */
+	public static function __set_time( $now ) {
+		self::$now = $now;
+	}
+
+	/**
 	 * Ensures only one instance of this class exists in memory at any one time.
 	 */
 	public static function get_instance() {
@@ -196,7 +221,7 @@ class Two_Factor_Totp extends Two_Factor_Provider {
 		$ticks = range( - $max_ticks, $max_ticks );
 		usort( $ticks, array( __CLASS__, 'abssort' ) );
 
-		$time = time() / self::DEFAULT_TIME_STEP_SEC;
+		$time = self::time() / self::DEFAULT_TIME_STEP_SEC;
 
 		$digits = strlen( $authcode );
 
@@ -312,7 +337,7 @@ class Two_Factor_Totp extends Two_Factor_Provider {
 		}
 
 		if ( false === $step_count ) {
-			$step_count = floor( time() / $time_step );
+			$step_count = floor( self::time() / $time_step );
 		}
 
 		$timestamp = self::pack64( $step_count );
