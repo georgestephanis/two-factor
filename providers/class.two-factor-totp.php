@@ -202,8 +202,12 @@ class Two_Factor_Totp extends Two_Factor_Provider {
 
 		foreach ( $ticks as $offset ) {
 			$log_time = $time + $offset;
-			if ( self::calc_totp( $key, $log_time, $digits, $hash, $time_step ) === $authcode ) {
-				return true;
+			try {
+				if ( self::calc_totp( $key, $log_time, $digits, $hash, $time_step ) === $authcode ) {
+					return true;
+				}
+			} catch ( InvalidArgumentException $e ) {
+				return false;
 			}
 		}
 		return false;
@@ -285,6 +289,8 @@ class Two_Factor_Totp extends Two_Factor_Provider {
 	 * @param int    $digits     The number of digits in the returned code.
 	 * @param string $hash       The hash used to calculate the code.
 	 * @param int    $time_step  The size of the time step.
+	 *
+	 * @throws InvalidArgumentException If an invalid hash type is specified.
 	 *
 	 * @return string The totp code
 	 */
