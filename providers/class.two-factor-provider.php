@@ -18,6 +18,21 @@ abstract class Two_Factor_Provider {
 	}
 
 	/**
+	 * Return a singleton instance of the provider.
+	 *
+	 * @return Two_Factor_Provider
+	 */
+	public static function get_instance() {
+		static $instance;
+
+		if ( ! isset( $instance ) ) {
+			$instance = new static();
+		}
+
+		return $instance;
+	}
+
+	/**
 	 * Returns the name of the provider.
 	 *
 	 * @since 0.1-dev
@@ -73,6 +88,10 @@ abstract class Two_Factor_Provider {
 	 * @return boolean
 	 */
 	abstract function is_available_for_user( $user );
+
+	public function render_user_settings( $user ) {}
+
+	public function save_user_settings( $user ) {}
 
 	/**
 	 * Generate a random eight-digit string to send out as an auth code.
