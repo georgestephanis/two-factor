@@ -31,6 +31,7 @@ env:
 
 before_script:
   - npm install
+  - export DEV_LIB_SKIP=coverage
   - export DEV_LIB_PATH="vendor/xwp/wp-dev-lib/scripts"
   - source "$DEV_LIB_PATH/travis.install.sh"
 
@@ -38,4 +39,6 @@ script:
   - source "$DEV_LIB_PATH/travis.script.sh"
 
 after_script:
-  - source "$DEV_LIB_PATH/travis.after_script.sh"
+  # Report PHP test coverage, if present.
+  - find . -type f -name clover.xml
+  - test -f tests/logs/clover.xml && npm run test-report-coverage || true
