@@ -2,6 +2,12 @@
 /**
  * Abstract class for creating two factor authentication providers.
  *
+ * @package Two_Factor
+ */
+
+/**
+ * Abstract class for creating two factor authentication providers.
+ *
  * @since 0.1-dev
  *
  * @package Two_Factor
@@ -24,7 +30,7 @@ abstract class Two_Factor_Provider {
 	 *
 	 * @return string
 	 */
-	abstract function get_label();
+	abstract public function get_label();
 
 	/**
 	 * Prints the name of the provider.
@@ -42,7 +48,7 @@ abstract class Two_Factor_Provider {
 	 *
 	 * @param WP_User $user WP_User object of the logged-in user.
 	 */
-	abstract function authentication_page( $user );
+	abstract public function authentication_page( $user );
 
 	/**
 	 * Allow providers to do extra processing before the authentication.
@@ -64,7 +70,7 @@ abstract class Two_Factor_Provider {
 	 * @param WP_User $user WP_User object of the logged-in user.
 	 * @return boolean
 	 */
-	abstract function validate_authentication( $user );
+	abstract public function validate_authentication( $user );
 
 	/**
 	 * Whether this Two Factor provider is configured and available for the user specified.
@@ -72,7 +78,7 @@ abstract class Two_Factor_Provider {
 	 * @param WP_User $user WP_User object of the logged-in user.
 	 * @return boolean
 	 */
-	abstract function is_available_for_user( $user );
+	abstract public function is_available_for_user( $user );
 
 	/**
 	 * Generate a random eight-digit string to send out as an auth code.
@@ -85,12 +91,11 @@ abstract class Two_Factor_Provider {
 	 */
 	public function get_code( $length = 8, $chars = '1234567890' ) {
 		$code = '';
-		if ( ! is_array( $chars ) ) {
-			$chars = str_split( $chars );
+		if ( is_array( $chars ) ) {
+			$chars = implode( '', $chars );
 		}
 		for ( $i = 0; $i < $length; $i++ ) {
-			$key = array_rand( $chars );
-			$code .= $chars[ $key ];
+			$code .= substr( $chars, wp_rand( 0, strlen( $chars ) - 1 ), 1 );
 		}
 		return $code;
 	}
