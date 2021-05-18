@@ -337,7 +337,7 @@ class Two_Factor_Totp extends Two_Factor_Provider {
 	 *
 	 * @return bool Whether the code is valid within the time frame
 	 */
-	public static function is_valid_authcode( $key, $authcode, $hash = 'sha1', $time_step = 30 ) {
+	public static function is_valid_authcode( $key, $authcode, $hash = self::DEFAULT_CRYPTO, $time_step = self::DEFAULT_TIME_STEP_SEC ) {
 		/**
 		 * Filter the maximum ticks to allow when checking valid codes.
 		 *
